@@ -3,7 +3,7 @@
   
   [_General API for GZHU developers_](https://docs.gzhuapi.xyz/)
   
-  📖 _非官方广州大学开  发者通用接口_
+  📖 _非官方广州大学开发者通用接口_
   
 [![GZHU docs](https://img.shields.io/static/v1?label=GZHU_API&message=DOC&style=flat-square&logo=GitBook)](https://docs.gzhuapi.xyz/)
 ![flask](https://img.shields.io/static/v1?label=Python&message=Flask&color=blue&logo=Python)
@@ -18,8 +18,23 @@
 
 # 欢迎
 
-💡这是一个非官方关于广州大学通用接口的仓库，制作了一个有效的通用接口，意想于提供一个“开放平台”API，供学校各个校园业务开发者提供便利。
+💡这是一个非官方关于广州大学通用接口的仓库，制作了一个有效的通用接口，意想于提供一个“开放平台”API，供学校各个校园业务开发者提供便利。整合正方教务的一系列复杂接口，
 
-> 尚未获得正式授权，仅提供简单的模拟请求服务，若有违相关规定或信息变更烦请联系 [favorhau@gmail.com](favorhau@gmail.com)
+> 本项目旨在让校园业务开发者能够有一个便携规范的调用接口
 
+# 目录
+- [项目组成](#项目组成)
+- [如何使用](#如何使用)
+- [部署](#部署)
 
+# 项目组成
+
+# 如何使用
+
+# 部署
+
+# 关于授权
+
+尚未获取官方授权，正在进行可用性测试中。
+
+> 仅提供简单的模拟请求服务，原则上不对任何个人信息进行储存，若有违相关规定或信息变更，烦请联系 [favorhau@gmail.com](favorhau@gmail.com)
