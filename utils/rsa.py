@@ -1,6 +1,6 @@
 import execjs
 
-with open('./rsa.js', 'r') as f:
+with open('./utils/rsa.js', 'r') as f:
   js_code = f.read()
 
 js_complied = execjs.compile(js_code)
