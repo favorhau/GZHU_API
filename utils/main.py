@@ -24,6 +24,15 @@ class Account(object):
     def _get_stu_info_url(self) -> str:
         return "https://newmy.gzhu.edu.cn/up/up/gzhuStaffInfo/{}"
         
+    def _get_sso_url(self) -> str:
+        return "http://jwxt.gzhu.edu.cn/sso/lyiotlogin"
+        
+    def _get_stu_trans(self) -> str:
+        return "http://jwxt.gzhu.edu.cn/jwglxt/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005"
+        
+    def _get_stu_class(self) -> str:
+        return "http://jwxt.gzhu.edu.cn/jwglxt/kbcx/xskbcx_cxXsKb.html?gnmkdm=N253508"
+        
     def login(self) -> bool:
         """
         Auth to GZHU website
@@ -50,7 +59,7 @@ class Account(object):
         else:
             return False
             
-    def get_stu_info(self, type = 1) -> str:
+    def get_stu_info(self, type=1) -> str:
         """
         Get specific infomation of student
         :param type: int, option:1,2 and 3, 1 is personal info, 2 is netfee info, 3 is ecard info. defalt: 1
