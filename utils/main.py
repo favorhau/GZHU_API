@@ -1,3 +1,4 @@
+from os import EX_OSFILE
 from .rsa import rsa_enc, rsa_dec
 import requests
 import re
@@ -84,7 +85,7 @@ class Account(object):
             
     def get_stu_trans(self, year='2020', term=1) -> None:
         """
-        Get specific transation of student(user score)
+        Get specific transript of student(user score)
         :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
         :param term: int ,1 for first term, 2 for second term
          :return : object, Transcript for user in optional params
@@ -105,6 +106,32 @@ class Account(object):
                 res = {}
                 
             return res
+            
         else:
             raise Exception('Login is needed')
-
+            
+    def get_stu_schedule(self, year='2021', term=1) -> None:
+        """
+        Get specific schedule of student(user score)
+        :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
+        :param term: int ,1 for first term, 2 for second term
+        :return : object, Schedule for user in optional params
+        """
+        if self.is_login:
+            sso_url = self._get_sso_url()
+            self.session.get(sso_url, verify=False, timeout=5)
+            schedule_url = self._get_stu_schedule_url()
+            post_data = {
+                'xnm': year,
+                'xqm': '3' if term == 1 else '12',
+                'queryModel.showCount': '15'
+            }
+            post_res = self.session.post(url=schedule_url, data=post_data, timeout=5)
+            try:
+                res = json.loads(post_res.text)
+            except Exception:
+                res = {}
+                
+            return res
+        else:
+            raise Exception('Login is needed')
