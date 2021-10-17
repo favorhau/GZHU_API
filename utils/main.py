@@ -15,7 +15,6 @@ class Account(object):
         self.usn = usn
         self.pwd = pwd
         self.is_login = False
-        self.stu_name = None
         self.session = requests.session()
         
     def _get_login_url(self) -> str:
@@ -25,12 +24,12 @@ class Account(object):
         return "https://newmy.gzhu.edu.cn/up/up/gzhuStaffInfo/{}"
         
     def _get_sso_url(self) -> str:
-        return "http://jwxt.gzhu.edu.cn/sso/lyiotlogin"
+        return "http://jwxt.gzhu.edu.cn/sso/driot4login"
         
-    def _get_stu_trans(self) -> str:
+    def _get_stu_trans_url(self) -> str:
         return "http://jwxt.gzhu.edu.cn/jwglxt/cjcx/cjcx_cxDgXscj.html?doType=query&gnmkdm=N305005"
         
-    def _get_stu_class(self) -> str:
+    def _get_stu_schedule_url(self) -> str:
         return "http://jwxt.gzhu.edu.cn/jwglxt/kbcx/xskbcx_cxXsKb.html?gnmkdm=N253508"
         
     def login(self) -> bool:
@@ -63,7 +62,7 @@ class Account(object):
         """
         Get specific infomation of student
         :param type: int, option:1,2 and 3, 1 is personal info, 2 is netfee info, 3 is ecard info. defalt: 1
-        :return type: object, infomation for user
+        :return : object, infomation for user
         """
         if self.is_login:
             url = self._get_stu_info_url()
@@ -74,6 +73,32 @@ class Account(object):
             else:
                 post_res = self.session.post(url.format('getECard'), verify=True,timeout=5)
             
+            try:
+                res = json.loads(post_res.text)
+            except Exception:
+                res = {}
+                
+            return res
+        else:
+            raise Exception('Login is needed')
+            
+    def get_stu_trans(self, year='2020', term=1) -> None:
+        """
+        Get specific transation of student(user score)
+        :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
+        :param term: int ,1 for first term, 2 for second term
+         :return : object, Transcript for user in optional params
+        """
+        if self.is_login:
+            sso_url = self._get_sso_url()
+            self.session.get(sso_url, verify=False, timeout=5)
+            trans_url = self._get_stu_trans_url()
+            post_data = {
+                'xnm': year,
+                'xqm': '3' if term == 1 else '12',
+                'queryModel.showCount': '15'
+            }
+            post_res = self.session.post(url=trans_url, data=post_data, timeout=5)
             try:
                 res = json.loads(post_res.text)
             except Exception:
