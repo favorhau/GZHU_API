@@ -88,7 +88,7 @@ class Account(object):
         Get specific transript of student(user score)
         :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
         :param term: int ,1 for first term, 2 for second term
-         :return : object, Transcript for user in optional params
+        :return : object, Transcript for user in optional params
         """
         if self.is_login:
             sso_url = self._get_sso_url()
@@ -97,7 +97,7 @@ class Account(object):
             post_data = {
                 'xnm': year,
                 'xqm': '3' if term == 1 else '12',
-                'queryModel.showCount': '15'
+                'queryModel.showCount': '70'
             }
             post_res = self.session.post(url=trans_url, data=post_data, timeout=5)
             try:
@@ -110,9 +110,48 @@ class Account(object):
         else:
             raise Exception('Login is needed')
             
-    def get_stu_schedule(self, year='2021', term=1) -> None:
+    def get_stu_gpa(self, year='2020', term=1, all=False) -> None:
         """
         Get specific schedule of student(user score)
+        :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
+        :param term: int ,1 for first term, 2 for second term
+        :param all: bool,True for all terms gpa, and False for specific term gpa.
+        :return : float, GPA(Grade Point Average) for student
+        """
+        
+        if self.is_login:
+            sso_url = self._get_sso_url()
+            self.session.get(sso_url, verify=False, timeout=5)
+            url = self._get_stu_trans_url()
+            post_data = {
+                'xnm': year,
+                'xqm': '3' if term == 1 else '12',
+                'queryModel.showCount': '70'
+            }
+            if all:
+                post_data['xnm'] = ''
+                post_data['xqm'] = ''
+            post_res = self.session.post(url=url, data=post_data, timeout=5)
+            
+            try:
+                score = json.loads(post_res.text)
+                term_gpas = [float(items['xfjd']) for items in score['items']]
+                term_xf = [float(items['xf']) for items in score['items']]
+                
+                term_gpa = round(sum(term_gpas)/sum(term_xf), 2)
+                return term_gpa
+                
+            except Exception:
+                return None
+                
+        else:
+            raise Exception('Login is needed')
+        
+            
+        
+    def get_stu_schedule(self, year='2021', term=1) -> None:
+        """
+        Get Grade Point Average of student(user score)
         :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
         :param term: int ,1 for first term, 2 for second term
         :return : object, Schedule for user in optional params
@@ -124,7 +163,7 @@ class Account(object):
             post_data = {
                 'xnm': year,
                 'xqm': '3' if term == 1 else '12',
-                'queryModel.showCount': '15'
+                'queryModel.showCount': '70'
             }
             post_res = self.session.post(url=schedule_url, data=post_data, timeout=5)
             try:
