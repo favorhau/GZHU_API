@@ -36,6 +36,12 @@ class Account(object):
     def _get_stu_portrait_url(self) -> str:
         return "http://jwxt.gzhu.edu.cn/jwglxt/xtgl/photo_cxXszp.html?xh_id={}&zplx=rxhzp".format(self.usn)
         
+    def _get_stu_exam_url(self) -> str:
+        return "http://jwxt.gzhu.edu.cn/jwglxt/kwgl/kscx_cxXsksxxIndex.html?doType=query&gnmkdm=N358105"
+        
+    def _get_stu_credit_url(self) -> str:
+        return "http://jwxt.gzhu.edu.cn/jwglxt/xsxy/xsxyqk_cxKczxAllIndex.html?doType=query&gnmkdm=N105515"
+        
     def login(self) -> bool:
         """
         Auth to GZHU website
@@ -173,9 +179,54 @@ class Account(object):
             raise Exception('Login is needed')
             
     def get_stu_portrait(self) -> bytes:
+        """
+        Get the portrait of student
+        :return bytes
+        """
         if self.is_login:
             url = self._get_stu_portrait_url()
             get_res = self.session.get(url=url, timeout=5)
             return get_res.content
+        else:
+            raise Exception('Login is needed')
+            
+    def get_stu_exam(self, year='2021', term=1) -> dict:
+        """
+        Get Exam infomation for student
+        :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
+        :param term: int ,1 for first term, 2 for second term
+        :return : dict, Exam information for user in optional params
+        """
+        if self.is_login:
+            exam_url = self._get_stu_exam_url()
+            post_data = {
+                'xnm': year,
+                'xqm': '3' if term == 1 else '12',
+                'queryModel.showCount': '70'
+            }
+            post_res = self.session.post(url=exam_url, data=post_data, timeout=5)
+            try:
+                res = json.loads(post_res.text)
+            except Exception:
+                res = {}
+                
+            return res
+        else:
+            raise Exception('Login is needed')
+            
+    def get_stu_credit(self) -> dict:
+        """
+        Get course study infomation for student
+        :return : dict,Get course study details with credit had gotton
+        """
+        if self.is_login:
+            url = self._get_stu_credit_url()
+            post_res = self.session.get(url=url, timeout=5)
+            try:
+                res = json.loads(post_res.text)
+            except Exception:
+                res = {}
+                
+            return res
         else:
             raise Exception('Login is needed')
