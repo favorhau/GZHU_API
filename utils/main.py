@@ -33,6 +33,9 @@ class Account(object):
     def _get_stu_schedule_url(self) -> str:
         return "http://jwxt.gzhu.edu.cn/jwglxt/kbcx/xskbcx_cxXsKb.html?gnmkdm=N253508"
         
+    def _get_stu_portrait_url(self) -> str:
+        return "http://jwxt.gzhu.edu.cn/jwglxt/xtgl/photo_cxXszp.html?xh_id={}&zplx=rxhzp".format(self.usn)
+        
     def login(self) -> bool:
         """
         Auth to GZHU website
@@ -54,16 +57,18 @@ class Account(object):
         }
         post_res = self.session.post(url, data=login_form,timeout=5)
         if self.usn in post_res.text:
+            sso_url = self._get_sso_url()
+            self.session.get(sso_url, verify=False, timeout=5)
             self.is_login = True
             return True
         else:
             return False
             
-    def get_stu_info(self, type=1) -> str:
+    def get_stu_info(self, type=1) -> dict:
         """
         Get specific infomation of student
         :param type: int, option:1,2 and 3, 1 is personal info, 2 is netfee info, 3 is ecard info. defalt: 1
-        :return : object, infomation for user
+        :return : dict, infomation for user
         """
         if self.is_login:
             url = self._get_stu_info_url()
@@ -83,16 +88,14 @@ class Account(object):
         else:
             raise Exception('Login is needed')
             
-    def get_stu_trans(self, year='2020', term=1) -> None:
+    def get_stu_trans(self, year='2020', term=1) -> dict:
         """
         Get specific transript of student(user score)
         :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
         :param term: int ,1 for first term, 2 for second term
-        :return : object, Transcript for user in optional params
+        :return : dict, Transcript for user in optional params
         """
         if self.is_login:
-            sso_url = self._get_sso_url()
-            self.session.get(sso_url, verify=False, timeout=5)
             trans_url = self._get_stu_trans_url()
             post_data = {
                 'xnm': year,
@@ -110,7 +113,7 @@ class Account(object):
         else:
             raise Exception('Login is needed')
             
-    def get_stu_gpa(self, year='2020', term=1, all=False) -> None:
+    def get_stu_gpa(self, year='2020', term=1, all=False) -> float:
         """
         Get specific schedule of student(user score)
         :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
@@ -120,8 +123,6 @@ class Account(object):
         """
         
         if self.is_login:
-            sso_url = self._get_sso_url()
-            self.session.get(sso_url, verify=False, timeout=5)
             url = self._get_stu_trans_url()
             post_data = {
                 'xnm': year,
@@ -147,18 +148,14 @@ class Account(object):
         else:
             raise Exception('Login is needed')
         
-            
-        
-    def get_stu_schedule(self, year='2021', term=1) -> None:
+    def get_stu_schedule(self, year='2021', term=1) -> dict:
         """
         Get Grade Point Average of student(user score)
         :param year: str ,2020 means 2020-2021 and 2019 means 2019-2020
         :param term: int ,1 for first term, 2 for second term
-        :return : object, Schedule for user in optional params
+        :return : dict, Schedule for user in optional params
         """
         if self.is_login:
-            sso_url = self._get_sso_url()
-            self.session.get(sso_url, verify=False, timeout=5)
             schedule_url = self._get_stu_schedule_url()
             post_data = {
                 'xnm': year,
@@ -172,5 +169,13 @@ class Account(object):
                 res = {}
                 
             return res
+        else:
+            raise Exception('Login is needed')
+            
+    def get_stu_portrait(self) -> bytes:
+        if self.is_login:
+            url = self._get_stu_portrait_url()
+            get_res = self.session.get(url=url, timeout=5)
+            return get_res.content
         else:
             raise Exception('Login is needed')
