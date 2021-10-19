@@ -24,6 +24,9 @@ class Account(object):
     def _get_stu_info_url(self) -> str:
         return "https://newmy.gzhu.edu.cn/up/up/gzhuStaffInfo/{}"
         
+    def _get_process_doing(self) -> str:
+        return "https://newmy.gzhu.edu.cn/up/up/gzhuStaffInfo/getProcessDoing"
+        
     def _get_sso_url(self) -> str:
         return "http://jwxt.gzhu.edu.cn/sso/driot4login"
         
@@ -94,6 +97,19 @@ class Account(object):
         else:
             raise Exception('Login is needed')
             
+    def get_process_doing(self) -> list:
+        """
+        Get the student on-going workflow in taskcenter
+        :return :list, On-going task in taskcenter
+        """
+        if self.is_login:
+            url = self._get_process_doing()
+            res = self.session.post(url=url, timeout=5)
+            
+            return eval(res.text)
+        else:
+            raise Exception('Login is needed')
+
     def get_stu_trans(self, year='2020', term=1) -> dict:
         """
         Get specific transript of student(user score)
@@ -226,7 +242,7 @@ class Account(object):
                 res = json.loads(post_res.text)
             except Exception:
                 res = {}
-                
+            
             return res
         else:
             raise Exception('Login is needed')
