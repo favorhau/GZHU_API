@@ -9,6 +9,7 @@
 ![flask](https://img.shields.io/static/v1?label=Python&message=Flask&color=blue&logo=Python)
 ![Redis](https://img.shields.io/static/v1?label=Redis&message=CLI&logo=redis)
 [![Join on Slack](https://img.shields.io/badge/%20Issues-push-black?logo=GitHub&style=social&logoColor=lightgrey)](https://github.com/favorhau/GZHU_API/issues)
+
 🖐🏻小项目正在抓紧时间筹备当中...
 
   欢迎各位开发者加入到我们的小项目当中
