@@ -2,10 +2,11 @@
 # version: 1.0
 
 import re
-import jwt
 from utils import Account
 from flask import Flask, request
 import redis
+import hashlib
+import time
 
 app = Flask(__name__)
 r = redis.Redis(host='localhost', port=6379)
@@ -21,16 +22,21 @@ def verify():
     "msg": None,
     "data": []
     }
-    if not _token and 'verify' not in request.base_url:
-        res["msg"] = "Token needed"
+    if not _token:
+        if 'auth' in request.url:
+            pass
+        else:
+            res["msg"] = "Token needed"
+            return res
     else:
         res_token = r.get(_token)
         if res_token:
             pass
         else:
-            res["msg"] = "Token invail"
+            res["msg"] = "Invaild token"
+            return res
             
-    return res
+    
         
 @app.route("/v1/auth", methods=["POST"])
 def auth():
@@ -50,15 +56,21 @@ def auth():
         _password = _data["password"]
         account = Account(_username, _password)
         if account.login():
-            res["msg"] = "success"
-            res["token"] = 
+            token = hashlib.new('md5', "*1%.2{}3e822121{}".format(_username, time.time()).encode("utf-8")).hexdigest()
+            res["msg"] = "login success"
+            res["token"] = token
+            r.set(token, _username, ex=1296000)
             accounts[_username] = account
         else:
             res["msg"] = "username or password is wrong"
-            
-    except Exception:
+    except Exception as e:
         res["msg"] = "Unkown exception"
     
     return res
 
+@app.route("/v1/info", methods=['POST'])
+def info():
+    _token = request.headers.get('token')
+    _username = r.get(_token)
+    print(_username)
 app.run()

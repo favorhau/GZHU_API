@@ -1,4 +1,4 @@
-from re import A
+from re import A, X
 import redis
 import time
 r = redis.Redis(host='localhost', port=6379)
