@@ -1,3 +1,4 @@
 .git
 utils/__pycache__
 .VSCodeCounter
+.vercel
