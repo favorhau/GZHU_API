@@ -1,6 +1,8 @@
 from utils import Account
+from flask import Flask
 
-account  = Account('2006100062','257314')
-print(account.login())
-print(account.get_process_doing())
+app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return 'Hello World'
