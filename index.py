@@ -2,15 +2,23 @@
 # version: 1.0
 
 import re
+from typing import Dict
+
+from flask.globals import session
 from utils import Account
 from flask import Flask, request
 import redis
 import hashlib
 import time
+import ssl
+
+ssl._create_default_https_context = ssl._create_unverified_context
+
+
 
 app = Flask(__name__)
 r = redis.Redis(host='localhost', port=6379)
-accounts = {}
+accounts : Dict[str, Account] = {}
 
 @app.before_request
 def verify():
@@ -33,7 +41,7 @@ def verify():
         if res_token:
             pass
         else:
-            res["msg"] = "Invaild token"
+            res["msg"] = "Invalid token"
             return res
             
     
@@ -65,12 +73,30 @@ def auth():
             res["msg"] = "username or password is wrong"
     except Exception as e:
         res["msg"] = "Unkown exception"
+        print(e)
     
     return res
 
 @app.route("/v1/info", methods=['POST'])
 def info():
+    """
+    
+    """
     _token = request.headers.get('token')
     _username = r.get(_token)
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    try:
+        account = accounts[_username]
+        account.get_stu_info(1)
+        
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+        
+
     print(_username)
+    
 app.run()

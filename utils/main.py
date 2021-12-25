@@ -52,7 +52,7 @@ class Account(object):
         """
         url = self._get_login_url()
         self.session.cookies.clear()
-        get_res = self.session.get(url, verify=True, timeout=5)
+        get_res = self.session.get(url, verify=False, timeout=10)
         lt = re.findall(r'name="lt" value="(.*)"', get_res.text)
         login_form = {
         'username': self.usn,
@@ -64,10 +64,10 @@ class Account(object):
         '_eventId': 'submit',
         'rsa': rsa_enc(self.usn + self.pwd + lt[0])
         }
-        post_res = self.session.post(url, data=login_form,timeout=5)
+        post_res = self.session.post(url, data=login_form,timeout=10, verify=False)
         if self.usn in post_res.text:
             sso_url = self._get_sso_url()
-            self.session.get(sso_url, verify=False, timeout=5)
+            self.session.get(sso_url, verify=False, timeout=10)
             self.is_login = True
             return True
         else:
@@ -82,11 +82,11 @@ class Account(object):
         if self.is_login:
             url = self._get_stu_info_url()
             if type == 1:
-                post_res = self.session.post(url.format('getPIThree'), verify=True,timeout=5)
+                post_res = self.session.post(url.format('getPIThree'), verify=False,timeout=10)
             elif type == 2:
-                post_res = self.session.post(url.format('getNetFee'), verify=True,timeout=5)
+                post_res = self.session.post(url.format('getNetFee'), verify=False,timeout=10)
             else:
-                post_res = self.session.post(url.format('getECard'), verify=True,timeout=5)
+                post_res = self.session.post(url.format('getECard'), verify=False,timeout=10)
             
             try:
                 res = json.loads(post_res.text)
@@ -104,7 +104,7 @@ class Account(object):
         """
         if self.is_login:
             url = self._get_process_doing()
-            res = self.session.post(url=url, timeout=5)
+            res = self.session.post(url=url, timeout=10)
             
             return eval(res.text)
         else:
@@ -124,7 +124,7 @@ class Account(object):
                 'xqm': '3' if term == 1 else '12',
                 'queryModel.showCount': '70'
             }
-            post_res = self.session.post(url=trans_url, data=post_data, timeout=5)
+            post_res = self.session.post(url=trans_url, data=post_data, timeout=10)
             try:
                 res = json.loads(post_res.text)
             except Exception:
@@ -154,7 +154,7 @@ class Account(object):
             if all:
                 post_data['xnm'] = ''
                 post_data['xqm'] = ''
-            post_res = self.session.post(url=url, data=post_data, timeout=5)
+            post_res = self.session.post(url=url, data=post_data, timeout=10)
             
             try:
                 score = json.loads(post_res.text)
@@ -184,7 +184,7 @@ class Account(object):
                 'xqm': '3' if term == 1 else '12',
                 'queryModel.showCount': '70'
             }
-            post_res = self.session.post(url=schedule_url, data=post_data, timeout=5)
+            post_res = self.session.post(url=schedule_url, data=post_data, timeout=10)
             try:
                 res = json.loads(post_res.text)
             except Exception:
@@ -201,7 +201,7 @@ class Account(object):
         """
         if self.is_login:
             url = self._get_stu_portrait_url()
-            get_res = self.session.get(url=url, timeout=5)
+            get_res = self.session.get(url=url, timeout=10)
             return get_res.content
         else:
             raise Exception('Login is needed')
@@ -220,7 +220,7 @@ class Account(object):
                 'xqm': '3' if term == 1 else '12',
                 'queryModel.showCount': '70'
             }
-            post_res = self.session.post(url=exam_url, data=post_data, timeout=5)
+            post_res = self.session.post(url=exam_url, data=post_data, timeout=10)
             try:
                 res = json.loads(post_res.text)
             except Exception:
@@ -237,7 +237,7 @@ class Account(object):
         """
         if self.is_login:
             url = self._get_stu_credit_url()
-            post_res = self.session.get(url=url, timeout=5)
+            post_res = self.session.get(url=url, timeout=10)
             try:
                 res = json.loads(post_res.text)
             except Exception:
