@@ -35,8 +35,6 @@
 
 - Redis作为缓存，对token进行缓存
 
-
-
 后续可能会考虑添加上`nginx`承载一些服务端的问题
 
 ```text
@@ -48,12 +46,38 @@
     └── rsa.py // 打包rsa.js
 ``` 
 
-与此同时，开放的相关接口可以通过 [Postman](https://documenter.getpostman.com/view/19271237/UVXqDXg7#fc92da40-d5ed-4ffd-9b83-a4c84778e717) 或 [Gitbook](https://docs.gzhuapi.xyz/) 查看。
+
 
 # 如何使用
 
+当前，程序提供了三种接口方式，相关源码部署在了伺服器当中 ~~（阿里云学生机)~~ ，显然不能高并发的请求，但是为了接口测试，提供了api的IP网址接口。当然，API更推荐直接部署在自己的服务器当中。
+
+与此同时，因为代码相当于一个桥梁（教务系统与第三方Client客户端）,在鉴权方面可能会出现session或者cookie连接的问题，因此可能会出现储存在服务器的cookie失效，但是在缓存当中的token仍然能使用，因此在接口调用中出现`无法加载信息`的情况需要重新鉴权。
+
+## 直接接口调用
+
+我们已经将代码部署在了自己的服务器当中，请求的URL为
+
+```curl
+http://120.24.5.39/v1/<method>
+```
+
+开放的相关接口可以通过 [Postman](https://documenter.getpostman.com/view/19271237/UVXqDXg7#fc92da40-d5ed-4ffd-9b83-a4c84778e717) 或 [Gitbook](https://docs.gzhuapi.xyz/) 查看，并且请依据文档进行调用。
+
+⚠️ hints: 在调用查询接口前，必须通过`auth`进行鉴权，取得`token`之后将其添加到`header`后发起请求。
 
 # 部署
+
+1. 克隆本仓库
+
+```
+git clone 
+```
+
+
+
+# 常见问题
+
 
 
 # 关于授权
