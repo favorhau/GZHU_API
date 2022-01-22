@@ -1,6 +1,3 @@
-from os import EX_OSFILE
-
-from git import head
 from .rsa import rsa_enc, rsa_dec
 import requests
 import re
