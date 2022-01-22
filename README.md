@@ -54,31 +54,95 @@
 
 与此同时，因为代码相当于一个桥梁（教务系统与第三方Client客户端）,在鉴权方面可能会出现session或者cookie连接的问题，因此可能会出现储存在服务器的cookie失效，但是在缓存当中的token仍然能使用，因此在接口调用中出现`无法加载信息`的情况需要重新鉴权。
 
-## 直接接口调用
+## 接口调用测试
 
 我们已经将代码部署在了自己的服务器当中，请求的URL为
 
 ```curl
-http://120.24.5.39/v1/<method>
+http://120.24.5.39:8080/v1/<method>
 ```
 
 开放的相关接口可以通过 [Postman](https://documenter.getpostman.com/view/19271237/UVXqDXg7#fc92da40-d5ed-4ffd-9b83-a4c84778e717) 或 [Gitbook](https://docs.gzhuapi.xyz/) 查看，并且请依据文档进行调用。
 
 ⚠️ hints: 在调用查询接口前，必须通过`auth`进行鉴权，取得`token`之后将其添加到`header`后发起请求。
 
+## 直接接口调用
+
+请参考[部署](#部署)，将程序部署上服务器，设定端口
+
+
+```bash
+nohup python main.py >> main.log 2>&1 &
+```
+
+## 作为库引入
+
+
 # 部署
 
 1. 克隆本仓库
 
 ```
-git clone 
+git clone git@github.com:favorhau/GZHU_API.git
 ```
 
+2. 安装环境依赖
 
+默认已经安装好python（或conda）环境，与此同时需要`Flask`、`requests`、`redis`等pypi库
+
+```python
+pip install flask redis execjs requests
+# pip3 install flask redis execjs requests
+```
+3. redis安装
+
+- 在Linux下，可以执行
+```bash
+$ sudo apt update
+$ sudo apt install redis-server
+```
+
+并启动服务
+
+```bash
+$ sudo service redis start
+```
+
+- 在Macos下安装大同小异，可通过brew进行安装
+
+4. 启动服务
+```bash
+python index.py
+
+"""
+ * Serving Flask app "index" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8080/ (Press CTRL+C to quit)
+ """
+```
 
 # 常见问题
 
+1. 连接断开无请求
 
+```json
+{
+    "data": {},
+    "msg": "Catch exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
+}
+```
+
+2. 请求超时
+
+```json
+{
+    "data": {},
+    "msg": "Catch exception: HTTPSConnectionPool(host='newmy.gzhu.edu.cn', port=443): Read timed out. (read timeout=15)"
+}
+```
 
 # 关于授权
 
