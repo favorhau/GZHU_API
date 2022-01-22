@@ -68,14 +68,43 @@ http://120.24.5.39:8080/v1/<method>
 
 ## 直接接口调用
 
-请参考[部署](#部署)，将程序部署上服务器，设定端口
+请参考[部署](#部署)，将程序部署上服务器，端口默认为`8080`，由于linux系统特殊，进程在推出命令行的时候就会退出因此需要守护此进程。
 
+- 使用进程守护方式运行
 
 ```bash
-nohup python main.py >> main.log 2>&1 &
+nohup python index.py >> index.log 2>&1 &
 ```
 
+- 退出进程
+
+  - 查看现行进程
+  ```bash
+  ps -x
+  ```
+  - 关闭进程
+  ```bash
+  kill <uid>
+  ```
+  
+
 ## 作为库引入
+
+如果有需要二次开发，可以将程序作为库进行引入
+```python
+from utils import Account
+```
+
+Account类包含所需要的查询鉴权方法
+
+eg:
+```python
+_username = "2106****"
+_password = "090909"
+account = Account(_username, _password)
+account.auth() # 鉴权
+info = account.get_stu_info() # 获取信息
+```
 
 
 # 部署
@@ -126,18 +155,20 @@ python index.py
 
 # 常见问题
 
-1. 连接断开无请求
+1. 连接断开无请求 或 超时
+
+> 由于现在的校园网验证采用HTTPS方式，因此在模拟请求的过程中可能会出现链接超时等的情况，这样需要重复请求auth鉴权。
 
 ```json
+//连接关闭
 {
     "data": {},
     "msg": "Catch exception: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
 }
 ```
 
-2. 请求超时
-
 ```json
+//连接超时
 {
     "data": {},
     "msg": "Catch exception: HTTPSConnectionPool(host='newmy.gzhu.edu.cn', port=443): Read timed out. (read timeout=15)"
