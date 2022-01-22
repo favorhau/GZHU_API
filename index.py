@@ -39,9 +39,75 @@ def verify():
             pass
         else:
             res["msg"] = "Invalid token"
-            return res
-            
+            return res        
+
+@app.route("/v1/info", methods=['GET'])
+def info():
+    """
+    Get the students info
+    """
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    res = {
+    "msg": None,
+    "data": {}
+    }
     
+    try:
+        account = accounts[_username]
+        PIThree = account.get_stu_info(1)
+        NetFee = account.get_stu_info(2)
+        ECard = account.get_stu_info(3)
+        res["msg"] = "success"
+        res['data']['PIThree'] = PIThree
+        res['data']['NetFee'] = NetFee
+        res['data']['ECard'] = ECard
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+        
+    return res
+    
+@app.route("/v1/portrait", methods=['GET'])
+def portrait():
+    """
+    Get the students Portrait
+    """
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    try:
+        account = accounts[_username]
+        return account.get_stu_portrait()
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+        return res
+        
+@app.route("/v1/credit", methods=['GET'])
+def credit():
+    """
+    Get the students Credit
+    """
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    try:
+        account = accounts[_username]
+        res['msg'] = "success"
+        res["data"] = account.get_stu_credit()
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+    
+    return res
+        
         
 @app.route("/v1/auth", methods=["POST"])
 def auth():
@@ -73,33 +139,6 @@ def auth():
 
     return res
 
-@app.route("/v1/info", methods=['POST'])
-def info():
-    """
-    Get the students info
-    """
-    _token = request.headers.get('token')
-    _username = r.get(_token).decode("utf-8")
-    res = {
-    "msg": None,
-    "data": {}
-    }
-    
-    try:
-        account = accounts[_username]
-        PIThree = account.get_stu_info(1)
-        NetFee = account.get_stu_info(2)
-        ECard = account.get_stu_info(3)
-        res["msg"] = "success"
-        res['data']['PIThree'] = PIThree
-        res['data']['NetFee'] = NetFee
-        res['data']['ECard'] = ECard
-        
-    except Exception as e:
-        res["msg"] = "Catch exception: {}".format(str(e))
-        
-    return res
-    
     
 @app.route("/v1/trans", methods=['POST'])
 def trans():
@@ -123,8 +162,79 @@ def trans():
         
     except Exception as e:
         res["msg"] = "Catch exception: {}".format(str(e))
-        
     return res
     
-
+@app.route("/v1/gpa", methods=['POST'])
+def gpa():
+    """
+    Get the students GPA
+    """
+    _data = eval(request.data)
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    
+    _year = _data['year']
+    _term = _data['term']
+    _all = True if _data['all'] == "1" else False
+    
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    try:
+        account = accounts[_username]
+        res["msg"] = "success"
+        res['data']['gpa'] = account.get_stu_gpa(year=_year, term=eval(_term), all=_all)
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+    return res
+    
+@app.route("/v1/schedule", methods=['POST'])
+def schedule():
+    """
+    Get the students Schedule
+    """
+    _data = eval(request.data)
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    _year = _data['year']
+    _term = _data['term']
+    
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    try:
+        account = accounts[_username]
+        res["msg"] = "success"
+        res['data'] = account.get_stu_schedule(year=_year, term=eval(_term))
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+    return res
+    
+@app.route("/v1/exam", methods=['POST'])
+def exam():
+    """
+    Get the students Exam
+    """
+    _data = eval(request.data)
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    _year = _data['year']
+    _term = _data['term']
+    
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    try:
+        account = accounts[_username]
+        res["msg"] = "success"
+        res['data'] = account.get_stu_exam(year=_year, term=eval(_term))
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+    return res
+    
 app.run('0.0.0.0', port=8080)

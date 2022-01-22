@@ -1,4 +1,6 @@
 from os import EX_OSFILE
+
+from git import head
 from .rsa import rsa_enc, rsa_dec
 import requests
 import re
@@ -53,6 +55,7 @@ class Account(object):
         """
         url = self._get_login_url()
         self.session.cookies.clear()
+
         get_res = self.session.get(url, verify=False, timeout=10)
         lt = re.findall(r'name="lt" value="(.*)"', get_res.text)
         login_form = {
@@ -65,7 +68,8 @@ class Account(object):
         '_eventId': 'submit',
         'rsa': rsa_enc(self.usn + self.pwd + lt[0])
         }
-        post_res = self.session.post(url, data=login_form,timeout=10, verify=False)
+        post_res = self.session.post(url, data=login_form,timeout=15, verify=False)
+        
         if self.usn in post_res.text:
             sso_url = self._get_sso_url()
             self.session.get(sso_url, verify=False, timeout=10)

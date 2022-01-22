@@ -1,4 +1,6 @@
 .git
 utils/__pycache__
+./__pycache__
 .VSCodeCounter
 .vercel
+./test.py
