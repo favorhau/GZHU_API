@@ -4,6 +4,7 @@ import requests
 import re
 import json
 
+requests.packages.urllib3.disable_warnings()
 
 class Account(object):
     """Account

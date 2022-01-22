@@ -1,7 +1,6 @@
 # index.py
 # version: 1.0
 
-import re
 from typing import Dict
 
 from flask.globals import session
@@ -13,8 +12,6 @@ import time
 import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context
-
-
 
 app = Flask(__name__)
 r = redis.Redis(host='localhost', port=6379)
@@ -72,31 +69,62 @@ def auth():
         else:
             res["msg"] = "username or password is wrong"
     except Exception as e:
-        res["msg"] = "Unkown exception"
-        print(e)
-    
+        res["msg"] = "Catch exception: {}".format(e)
+
     return res
 
 @app.route("/v1/info", methods=['POST'])
 def info():
     """
-    
+    Get the students info
     """
     _token = request.headers.get('token')
-    _username = r.get(_token)
+    _username = r.get(_token).decode("utf-8")
+    res = {
+    "msg": None,
+    "data": {}
+    }
+    
+    try:
+        account = accounts[_username]
+        PIThree = account.get_stu_info(1)
+        NetFee = account.get_stu_info(2)
+        ECard = account.get_stu_info(3)
+        res["msg"] = "success"
+        res['data']['PIThree'] = PIThree
+        res['data']['NetFee'] = NetFee
+        res['data']['ECard'] = ECard
+        
+    except Exception as e:
+        res["msg"] = "Catch exception: {}".format(str(e))
+        
+    return res
+    
+    
+@app.route("/v1/trans", methods=['POST'])
+def trans():
+    """
+    Get the students Transcript
+    """
+    _data = eval(request.data)
+    _token = request.headers.get('token')
+    _username = r.get(_token).decode("utf-8")
+    _year = _data['year']
+    _term = _data['term']
+    
     res = {
     "msg": None,
     "data": {}
     }
     try:
         account = accounts[_username]
-        account.get_stu_info(1)
-        
+        res["msg"] = "success"
+        res['data'] = account.get_stu_trans(year=_year, term=eval(_term))
         
     except Exception as e:
         res["msg"] = "Catch exception: {}".format(str(e))
         
-
-    print(_username)
+    return res
     
-app.run()
+
+app.run('0.0.0.0', port=8080)
