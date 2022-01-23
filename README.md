@@ -139,7 +139,7 @@ $ sudo apt install redis-server
 $ sudo service redis start
 ```
 
-- 在Macos下安装大同小异，可通过brew进行安装
+- 在Mac下安装大同小异，可通过brew进行安装
 
 4. 启动服务
 ```bash
