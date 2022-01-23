@@ -147,17 +147,18 @@ def trans():
     """
     Get the students Transcript
     """
-    _data = eval(request.data)
-    _token = request.headers.get('token')
-    _username = r.get(_token).decode("utf-8")
-    _year = _data['year']
-    _term = _data['term']
-    
+  
     res = {
     "msg": None,
     "data": {}
     }
     try:
+        _data = eval(request.data)
+        _token = request.headers.get('token')
+        _username = r.get(_token).decode("utf-8")
+        _year = _data['year']
+        _term = _data['term']
+    
         account = accounts[_username]
         res["msg"] = "success"
         res['data'] = account.get_stu_trans(year=_year, term=eval(_term))
@@ -171,19 +172,18 @@ def gpa():
     """
     Get the students GPA
     """
-    _data = eval(request.data)
-    _token = request.headers.get('token')
-    _username = r.get(_token).decode("utf-8")
-    
-    _year = _data['year']
-    _term = _data['term']
-    _all = True if _data['all'] == "1" else False
-    
     res = {
     "msg": None,
     "data": {}
     }
     try:
+        _data = eval(request.data)
+        _token = request.headers.get('token')
+        _username = r.get(_token).decode("utf-8")
+        
+        _year = _data['year']
+        _term = _data['term']
+        _all = True if _data['all'] == "1" else False
         account = accounts[_username]
         res["msg"] = "success"
         res['data']['gpa'] = account.get_stu_gpa(year=_year, term=eval(_term), all=_all)
@@ -196,17 +196,16 @@ def schedule():
     """
     Get the students Schedule
     """
-    _data = eval(request.data)
-    _token = request.headers.get('token')
-    _username = r.get(_token).decode("utf-8")
-    _year = _data['year']
-    _term = _data['term']
-    
     res = {
     "msg": None,
     "data": {}
     }
     try:
+        _data = eval(request.data)
+        _token = request.headers.get('token')
+        _username = r.get(_token).decode("utf-8")
+        _year = _data['year']
+        _term = _data['term']
         account = accounts[_username]
         res["msg"] = "success"
         res['data'] = account.get_stu_schedule(year=_year, term=eval(_term))
@@ -220,17 +219,16 @@ def exam():
     """
     Get the students Exam
     """
-    _data = eval(request.data)
-    _token = request.headers.get('token')
-    _username = r.get(_token).decode("utf-8")
-    _year = _data['year']
-    _term = _data['term']
-    
     res = {
     "msg": None,
     "data": {}
     }
     try:
+        _data = eval(request.data)
+        _token = request.headers.get('token')
+        _username = r.get(_token).decode("utf-8")
+        _year = _data['year']
+        _term = _data['term']
         account = accounts[_username]
         res["msg"] = "success"
         res['data'] = account.get_stu_exam(year=_year, term=eval(_term))
