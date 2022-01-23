@@ -2,10 +2,11 @@
 # version: 1.0
 
 from typing import Dict
+from urllib import response
 
 from flask.globals import session
 from utils import Account
-from flask import Flask, request
+from flask import Flask, request, Response
 import redis
 import hashlib
 import time
@@ -81,7 +82,8 @@ def portrait():
     }
     try:
         account = accounts[_username]
-        return account.get_stu_portrait()
+        resp = Response(account.get_stu_portrait(), mimetype="image/jpeg")
+        return resp
         
     except Exception as e:
         res["msg"] = "Catch exception: {}".format(str(e))
