@@ -1,4 +1,4 @@
-from .rsa import rsa_enc, rsa_dec
+from .rsa import rsa_enc
 import requests
 import re
 import json
